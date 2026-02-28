@@ -8,7 +8,7 @@
     <div class="dashboard">
         <h2>My Goals</h2>
         <p>View your goals and progress.</p>
-        <div class="goals_container">
+        <div class="goals_container" id="goals_Container">
             <div class="goals">
                 <p class="goaltxt">
                     Goal 1: get a job at google and make 100k a year
@@ -65,9 +65,10 @@
 
 <div class="modal" id="popup">
   <div class="modal-content">
-    <h3>Hello 👋</h3>
-    <p>This is a custom popup modal.</p>
-    <button class="close" onclick="closeModal()">Close</button>
+    <h3>Set a Personal Goal👋</h3>
+    <p>Enter a goal you want to achieve.</p>
+    <input type="text" id="itemInput" placeholder="Enter item">
+    <button class="close" onclick="addItem(), closeModal()">Add Goal</button>
   </div>
 </div>
 
