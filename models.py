@@ -5,6 +5,7 @@ db = SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100)) # plain text passwords // hash the passwords if you are planning on releasing this
     xp = db.Column(db.Integer, default=0)
 
 class Goal(db.Model):

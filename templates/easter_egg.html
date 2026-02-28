@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Gaming</h1>
+
+<div id="game-board" style="width:400px;height:200px;border:1px solid black;position:relative;">
+    <div id="player1" style="width:20px;height:20px;background:red;position:absolute;top:50px;left:50px;"></div>
+    <div id="player2" style="width:20px;height:20px;background:blue;position:absolute;top:50px;left:100px;"></div>
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+const socket = io();
+const keysDown = new Set();
+
+// Current and target positions for smooth interpolation
+let positions = {
+    player1: { x: 50, y: 50 },
+    player2: { x: 100, y: 50 }
+};
+let targetPositions = { ...positions };
+let myPlayer = null;
+const speed = 0.1; // interpolation speed (0.1-0.3 works well)
+
+// Render function: updates DOM positions
+function render() {
+    for (let player in positions) {
+        const el = document.getElementById(player);
+        el.style.left = positions[player].x + "px";
+        el.style.top = positions[player].y + "px";
+    }
+}
+
+// Animation loop using requestAnimationFrame
+function animate() {
+    for (let player in positions) {
+        // Linear interpolation towards target position
+        positions[player].x += (targetPositions[player].x - positions[player].x) * speed;
+        positions[player].y += (targetPositions[player].y - positions[player].y) * speed;
+    }
+    render();
+    requestAnimationFrame(animate);
+}
+animate(); // start loop
+
+// Handle initial assignment from server
+socket.on("init", (data) => {
+    myPlayer = data.player;
+    targetPositions = data.positions;
+});
+
+// Handle updates from server
+socket.on("update", (data) => {
+    targetPositions = data; // server sends authoritative positions
+});
+
+// Send WASD moves to server
+document.addEventListener("keydown", (e) => {
+    if (!myPlayer) return; // don't send moves until server assigns player
+    const key = e.key.toLowerCase();
+    if (["w","a","s","d"].includes(key)) {
+        socket.emit("move", { key: key });
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    const key = e.key.toLowerCase();
+    keysDown.delete(key); // remove key from set
+});
+
+// Send moves at a constant interval
+setInterval(() => {
+    if (!myPlayer) return;
+    if (keysDown.size > 0) {
+        socket.emit("move", { keys: Array.from(keysDown) });
+    }
+}, 50); // 50ms = 20 updates/sec
+</script>
+
+{% endblock %}
