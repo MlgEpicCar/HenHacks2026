@@ -7,7 +7,11 @@ body {
     background-color: #dbe5f3;
 }
 
-/* NAVBAR CSS*/
+/*
+==============================
+         NAVBAR CSS
+==============================
+*/
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -43,4 +47,23 @@ body {
 
 .nav-links li a:hover {
     color: #ffeaa7;
+}
+
+/* 
+==============================
+          INDEX CSS
+==============================
+*/
+
+.index_container {
+    display: grid;
+    grid-template-columns: 33% 67%;
+}
+.dashboard {
+    background-color: lightblue;
+    height: 100px;
+}
+.hubzone {
+    background-color: greenyellow;
+    height: 100px;
 }
