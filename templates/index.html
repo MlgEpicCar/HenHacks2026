@@ -1,9 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>HenHacks2026</title>
-</head>
-<body>
-    <h1>Hello World</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="navbar">
+    <div class="logo">goated logo</div>
+    <ul class="nav-links">
+        <li><a href="/index">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/settings">Settings</a></li>
+    </ul>
+</nav>
+
+<h1>Hello World</h1>
+
+{% endblock %}
