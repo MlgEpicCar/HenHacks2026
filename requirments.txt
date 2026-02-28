@@ -1,0 +1,40 @@
+How to read requirments.txt:
+Name
+What it does
+-
+What to do/Command in Terminal
+==
+
+
+1:
+Python
+We all know what python does
+-
+python
+==
+
+
+2:
+Flask-SQLAlchemy
+Allows us to store data in SQL
+-
+python -m pip install flask flask_sqlalchemy
+==
+
+
+3 (Host Only):
+Ngrok
+Allows other people to open the project with a url
+-
+Install Ngrok and make an account
+ngrok config add-authtoken $YOUR_AUTHTOKEN
+ngrok http 5000
+==
+
+
+4:
+Flask SocketIO
+Allows for handeling of mutliple users and their inputs
+-
+python -m pip install flask flask-socketio eventlet
+==
