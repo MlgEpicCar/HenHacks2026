@@ -23,11 +23,26 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-}
-
-.navbar .logo {
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.profile-container {
+    display: flex;       
+    align-items: center;  
+    gap: 10px;         
+}
+
+.profile {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    
+}
+
+.login a {
+    text-decoration: none;
+    color: white;
 }
 
 .nav-links {

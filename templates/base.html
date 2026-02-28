@@ -8,11 +8,14 @@
 <body>
 
     <nav class="navbar">
-        <div class="logo">goated logo</div>
+        <div class="profile-container">
+            <img class="profile" src="{{ url_for('static', filename='pfps/unknown.png') }}" alt="Profile Picture">
+            <span class="login"><a href="{{ url_for('login') }}">Log In</a></span>
+        </div>
         <ul class="nav-links">
             <li><a href="{{ url_for('index') }}">Home</a></li>
             <li><a href="{{ url_for('gaming') }}">Gaming</a></li>
-            <li><a href="/profile">Profile</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
             <li><a href="/settings">Settings</a></li>
         </ul>
     </nav>
