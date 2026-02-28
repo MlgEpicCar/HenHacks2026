@@ -16,6 +16,9 @@ body {
     padding: 10px 20px;
     color: white;
     font-family: Arial, sans-serif;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .navbar .logo {
