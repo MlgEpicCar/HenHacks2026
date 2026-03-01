@@ -107,6 +107,19 @@ body {
     flex-shrink: 0;
     cursor: pointer;
 }
+.priority-badge {
+    background-color: #6c5ce7;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
 .hubzone {
     background-color: greenyellow;
     height: 100%;
@@ -136,7 +149,7 @@ body {
 }
 /*
 ==============================
-          Add Goal Button CSS
+    Add Goal Button CSS
 ==============================
 /* Popup background */
 /* Background overlay */
@@ -181,6 +194,24 @@ body {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+/* Modal inputs */
+.modal-content input[type="text"],
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
 }
 /*
 ==============================

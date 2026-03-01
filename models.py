@@ -12,4 +12,5 @@ class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(200))
     completed = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.Integer, default=3)  # 1-5 scale
     user_id = db.Column(db.Integer)
