@@ -2,12 +2,15 @@
 
 {% block content %}
 
-<h1>Hello World</h1>
+<div style="text-align: center;">
+    <h3>Welcome to</h3>
+    <h1>Habit Haven</h1>
+</div>
 
 <div class="index_container">
     <div class="dashboard">
         <h2 class="goalheader">My Goals</h2>
-        <p class="goalheader">View your goals and progress.</p>
+        <p class="goalheader">View your goals and progress. Complete your goals to level up!</p>
         <div class="goals_container" id="goals_Container">
             {% if current_user %}
                 {% for goal in goals %}

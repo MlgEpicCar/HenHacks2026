@@ -48,14 +48,20 @@ class FriendRequest(db.Model):
     to_user = db.relationship("User", foreign_keys=[to_user_id])
 
 class RPSGame(db.Model):
+    __tablename__ = "rps_game"
+    
     id = db.Column(db.Integer, primary_key=True)
     player1_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     player2_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    player1_choice = db.Column(db.String(10), default=None)
-    player2_choice = db.Column(db.String(10), default=None)
+    player1_choice = db.Column(db.String)
+    player2_choice = db.Column(db.String)
     winner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # new columns for wins
+    player1_wins = db.Column(db.Integer, default=0)
+    player2_wins = db.Column(db.Integer, default=0)
 
+    # Relationships
     player1 = db.relationship("User", foreign_keys=[player1_id])
     player2 = db.relationship("User", foreign_keys=[player2_id])
     winner = db.relationship("User", foreign_keys=[winner_id])

@@ -2,15 +2,21 @@
 
 {% block content %}
 
-<h1>Profile</h1>
+<div style="text-align: center;">
+    <h1>Profile</h1>
+    <h3>Express Yourself</h3>
+</div>
 
-<div style="display: flex; gap: 2rem;">
+<div style="display: flex;">
     <div style="flex: 1; max-width: 50%;">
         <form method="POST" class="profile_page">
-            <input type="text" name="bio" placeholder="Bio" class="bio" value="{{ user.bio }}">
-
+            <h3>Say a little bit about yourself</h3>
+            <textarea name="bio" placeholder="Bio" class="bio"
+                    style="height: 5vh; width: 250px; padding: 0.3em; box-sizing: border-box; resize: vertical;">{{ user.bio }}</textarea>
+            
+            <h3>Choose Your Pal!</h3>
             <select class="dropdown" name="pfp">
-                <option value="unknown" {% if user.pfp == "unknown" %}selected{% endif %}>Choose your Pal!</option>
+                <option value="unknown" {% if user.pfp == "unknown" %}selected{% endif %}>None</option>
                 <option value="dog" {% if user.pfp == "dog" %}selected{% endif %}>Dog</option>
                 <option value="cat" {% if user.pfp == "cat" %}selected{% endif %}>Cat</option>
                 <option value="penquin" {% if user.pfp == "penquin" %}selected{% endif %}>Penquin</option>
@@ -28,11 +34,11 @@
     <div style="flex: 1; max-width: 50%; display: flex; flex-direction: column; gap: 1rem;">
         <h2>Your Friends</h2>
         {% for friend in user.friends %}
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 8px;">
+            <div class='friends_box' style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem; border: 2px solid #2e7d32; border-radius: 8px; margin-right: 30%; background-color: #49b44f;">
                 <div style="display:flex; align-items:center; gap: 1rem;">
                     <img src="{{ url_for('static', filename='pfps/' + friend.pfp + '.png') }}" 
                         alt="{{ friend.username }} PFP" 
-                        style="width:60px; height:60px; object-fit:cover; border-radius:50%;">
+                        style="width:60px; height:60px; object-fit:cover;">
                     <div>
                         <strong>{{ friend.username }}</strong><br>
                         <span>{{ friend.bio }}</span>
@@ -40,8 +46,8 @@
                 </div>
 
                 <!-- Remove Friend Button -->
-                <form method="POST" action="{{ url_for('remove_friend', friend_id=friend.id) }}">
-                    <button type="submit" style="background:red; color:white; border:none; padding:0.3rem 0.5rem; border-radius:4px; cursor:pointer;">
+                <form method="POST" action="{{ url_for('remove_friend', friend_id=friend.id) }}" style="margin-right: 4%;">
+                    <button type="submit" style="background:#2e7d32; color:white; border:none; padding:0.3rem 0.5rem; border-radius:4px; cursor:pointer;">
                         Remove
                     </button>
                 </form>
@@ -52,15 +58,15 @@
 
         <h3>Friend Requests</h3>
         {% for request in pending_requests %}
-            <div style="display:flex; align-items:center; gap:1rem; padding:0.5rem; border:1px solid #ccc; border-radius:8px;">
+            <div class='friends_box' style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem; border: 2px solid #f1d882; border-radius: 8px; margin-right: 30%; background-color: #ffeaa7;">
                 <img src="{{ url_for('static', filename='pfps/' + request.from_user.pfp + '.png') }}" 
-                    style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
+                    style="width:60px; height:60px; object-fit:cover;">
                 <div>
                     <strong>{{ request.from_user.username }}</strong> wants to be your friend
                 </div>
-                <form method="POST" action="{{ url_for('respond_friend_request', request_id=request.id) }}">
-                    <button name="action" value="accept" type="submit">Accept</button>
-                    <button name="action" value="deny" type="submit">Deny</button>
+                <form method="POST" action="{{ url_for('respond_friend_request', request_id=request.id) }}" style="margin-right: 4%;">
+                    <button name="action" value="accept" type="submit" style="background:#a38522; color:white; border:none; padding:0.3rem 0.5rem; border-radius:4px; cursor:pointer;" class="incoming_btns">Accept</button>
+                    <button name="action" value="deny" type="submit" style="background:#a38522; color:white; border:none; padding:0.3rem 0.5rem; border-radius:4px; cursor:pointer;" class="incoming_btns">Deny</button>
                 </form>
             </div>
         {% else %}
@@ -68,7 +74,6 @@
         {% endfor %}
     </div>
 </div>
-
 
 <script>
     const dropdown = document.querySelector(".dropdown");

@@ -9,9 +9,10 @@ body {
     color: #333;
 }
 html, body {
-  margin: 0;
-  padding: 0;
-  overflow-y: hidden;      /* hides any tiny overflow */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;      /* hides any tiny overflow */
 }
 
 /*
@@ -316,3 +317,12 @@ html, body {
 .preview {
     height: 200px;
 }
+
+.friends_box:hover {
+    transform: translateY(-2px);
+    background: #2e7d32;
+}
+
+.incoming_btns:hover {
+    background: #f1d882;
+} /* doesn't work, idk why */

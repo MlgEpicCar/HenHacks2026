@@ -311,16 +311,42 @@ def setup_routes(app):
                 p1 = game.player1_choice
                 p2 = game.player2_choice
 
+                # Determine winner
                 if p1 == p2:
-                    game.winner_id = None
+                    winner = None
                 elif (p1 == "rock" and p2 == "scissors") or \
                     (p1 == "paper" and p2 == "rock") or \
                     (p1 == "scissors" and p2 == "paper"):
-                    game.winner_id = game.player1_id
+                    winner = game.player1_id
                 else:
-                    game.winner_id = game.player2_id
+                    winner = game.player2_id
+
+                # Assign to game
+                game.winner_id = winner
+
+                # Increment win counters
+                if winner == game.player1_id:
+                    game.player1_wins += 1
+                elif winner == game.player2_id:
+                    game.player2_wins += 1
 
             db.session.commit()
             return redirect(url_for("rps_play", game_id=game.id))
 
         return render_template("rps_play.html", game=game, current_user=current_user)
+    
+    @app.route("/rps/<int:game_id>/reset", methods=["POST"])
+    def reset_rps(game_id):
+        game = RPSGame.query.get(game_id)
+        if not game:
+            flash("Game not found", "error")
+            return redirect(url_for("playground"))
+
+        # Reset choices and winner
+        game.player1_choice = None
+        game.player2_choice = None
+        game.winner_id = None
+        db.session.commit()
+        
+        flash("Game has been reset!", "success")
+        return redirect(url_for("rps_play", game_id=game.id))

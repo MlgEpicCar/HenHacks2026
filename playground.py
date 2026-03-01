@@ -7,8 +7,8 @@ def setup_socket_handlers(socketio):
 
     players = {}
     positions = {
-        "player1": {"x": 50, "yOffset": 200},
-        "player2": {"x": 300, "yOffset": 200}
+        "player1": {"x": 50, "yOffset": 1},
+        "player2": {"x": 300, "yOffset": 1}
     }
     player_users = {}
     usernames = {}
@@ -47,9 +47,9 @@ def setup_socket_handlers(socketio):
 
         # Left/right movement
         if "a" in keys:
-            positions[player]["x"] -= 5
+            positions[player]["x"] -= 20
         if "d" in keys:
-            positions[player]["x"] += 5
+            positions[player]["x"] += 20
 
         # Broadcast updated positions to all clients (sometimes lol)
         emit("update", positions, to=None)
@@ -59,6 +59,6 @@ def setup_socket_handlers(socketio):
         sid = request.sid
         player = players.get(sid)
         if player in ["player1","player2"]:
-            positions[player] = {"x":0,"yOffset": 200}
+            positions[player] = {"x":0,"yOffset": 1}
         players.pop(sid, None)
         emit("update", positions, to=None)

@@ -1,42 +1,108 @@
-<h1>Rock Paper Scissors</h1>
+{% extends "base.html" %}
+{% block content %}
 
-<h3>
-    {{ game.player1.username }} 
-    vs 
-    {{ game.player2.username }}
-</h3>
+<div style="
+    display: flex;
+    width: 100%;
+    min-height: 70vh;
+">
 
-<hr>
+    <!-- LEFT COLUMN (Player 1) -->
+    <div style="
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    ">
+        <img 
+            src="{{ url_for('static', filename='pfps/' + game.player1.pfp + '.png') }}" 
+            style="width: 25vh; height: 25vh; border-radius: 20px;"
+        >
 
-{% if game.winner_id %}
-    <h2>
-        Winner: 
-        {% if game.winner_id == game.player1_id %}
-            {{ game.player1.username }}
-        {% elif game.winner_id == game.player2_id %}
+        <h2>{{ game.player1.username }}</h2>
+
+        <h3>Wins: {{ game.player1_wins }}</h3>
+    </div>
+
+
+    <!-- MIDDLE COLUMN (Game Area) -->
+    <div style="
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    ">
+
+        <h1>Rock Paper Scissors</h1>
+
+        <h3>
+            {{ game.player1.username }} 
+            vs 
             {{ game.player2.username }}
+        </h3>
+
+        <hr>
+
+        {% if game.winner_id %}
+            <h2>
+                Winner: 
+                {% if game.winner_id == game.player1_id %}
+                    {{ game.player1.username }}
+                {% elif game.winner_id == game.player2_id %}
+                    {{ game.player2.username }}
+                {% else %}
+                    Tie!
+                {% endif %}
+            </h2>
+
+            <!-- RESET BUTTON -->
+            <form method="POST" action="{{ url_for('reset_rps', game_id=game.id) }}">
+                <button type="submit">Play Again</button>
+            </form>
+
         {% else %}
-            Tie!
+            <form method="POST">
+                <button name="choice" value="rock">Rock</button>
+                <button name="choice" value="paper">Paper</button>
+                <button name="choice" value="scissors">Scissors</button>
+            </form>
         {% endif %}
-    </h2>
-{% endif %}
 
-{% if not game.winner_id %}
-    <form method="POST">
-        <button name="choice" value="rock">Rock</button>
-        <button name="choice" value="paper">Paper</button>
-        <button name="choice" value="scissors">Scissors</button>
-    </form>
-{% endif %}
+        <hr>
 
-<hr>
+        <p>
+            {{ game.player1.username }} choice:
+            {{ game.player1_choice or "Waiting..." }}
+        </p>
 
-<p>
-    {{ game.player1.username }} choice:
-    {{ game.player1_choice or "Waiting..." }}
-</p>
+        <p>
+            {{ game.player2.username }} choice:
+            {{ game.player2_choice or "Waiting..." }}
+        </p>
 
-<p>
-    {{ game.player2.username }} choice:
-    {{ game.player2_choice or "Waiting..." }}
-</p>
+    </div>
+
+
+    <!-- RIGHT COLUMN (Player 2) -->
+    <div style="
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    ">
+        <img 
+            src="{{ url_for('static', filename='pfps/' + game.player2.pfp + '.png') }}" 
+            style="width: 25vh; height: 25vh; border-radius: 20px;"
+        >
+
+        <h2>{{ game.player2.username }}</h2>
+
+        <h3>Wins: {{ game.player2_wins }}</h3>
+    </div>
+
+</div>
+
+{% endblock %}

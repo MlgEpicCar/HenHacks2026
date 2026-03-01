@@ -1,46 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Gaming</h1>
-<div style="display:flex; gap:2rem;">
-    <div style="flex:1; min-width:300px;">
-        <form method="POST" action="{{ url_for('add_friend_by_name') }}">
-            <input type="text" name="username" placeholder="Enter friend's username" required>
-            <button type="submit">Add Friend</button>
-        </form>
-    </div>
-    <div style="flex:1; min-width:300px;">
-        <h3>Play Rock Paper Scissors</h3>
+<div style="text-align: center;">
+    <h1>The Playground</h1>
+    <h3>Make Friends, Play Games, Have Fun</h3>
+</div>
+<div>
+    <div style="display:flex; gap:2rem;">
+        <div style="
+            flex:1;
+            min-width:300px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+        ">
+            <h2>Make Friends</h2>
+            <form method="POST" action="{{ url_for('add_friend_by_name') }}">
+                <input type="text" name="username" placeholder="Enter friend's username" required>
+                <button type="submit">Add Friend</button>
+            </form>
+        </div>
+        <div style="flex:1; min-width:300px; display: grid; justify-content: center;">
+            <h2>Play Games</h2>
 
-        {% if user.friends %}
-            <label>Select a friend:</label>
-            <div style="margin-top:10px;">
-                {% for friend in user.friends %}
-                    <div style="margin-bottom:8px;">
-                        <a href="{{ url_for('rps_challenge', friend_id=friend.id) }}">
-                            <button type="button">
-                                Play vs {{ friend.username }}
-                            </button>
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>You have no friends added yet.</p>
-        {% endif %}
+            {% if user.friends %}
+                <div style="padding-bottom: 1vh;"><select class="dropdown" name="pfp">
+                    <option>Select a Game!</option>
+                    <option>Rock Paper Scissors</option>
+                </select></div>
+                <label>Select a friend:</label>
+                <div style="margin-top:10px; height: 30vh;">
+                    {% for friend in user.friends %}
+                        <div style="
+                                display:flex;
+                                align-items:center;
+                                gap:10px;
+                                margin-bottom:10px;">
+                            <img src="{{ url_for('static', filename='pfps/' + friend.pfp + '.png') }}" width="30">
+                            <a href="{{ url_for('rps_challenge', friend_id=friend.id) }}">
+                                <button type="button">
+                                    Challange {{ friend.username }}
+                                </button>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>You have no friends added yet.</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 
 
-<div id="game-board" style="width:100%;height:100vh;border:0px solid black;position:relative;">
+<div id="game-container" style="position: fixed; width:100%; height:500px; margin-top: 20px;">
+    <div id="ground" style="position:fixed; left:0; bottom:0; width:100%; height:50px; background-color:green; height:100px;"></div>
+
     <!-- Player 1 -->
-    <div id="player1-container" style="position:absolute; left:50px; top:300px; text-align:center;">
+    <div id="player1-container" style="position:fixed; left:50px; bottom:50px; text-align:center;">
         <div id="player1" class="player" style="width:15vh;height:15vh;background-size:cover;background-position:center;"></div>
         <span id="player1-name" class="player-name" style="color:white; font-weight:bold;">Player1</span>
     </div>
 
     <!-- Player 2 -->
-    <div id="player2-container" style="position:absolute; left:100px; top:300px; text-align:center;">
+    <div id="player2-container" style="position:fixed; left:100px; bottom:50px; text-align:center;">
         <div id="player2" class="player" style="width:15vh;height:15vh;background-size:cover;background-position:center;"></div>
         <span id="player2-name" class="player-name" style="color:white; font-weight:bold;">Player2</span>
     </div>
@@ -53,8 +76,8 @@ const keysDown = new Set();
 
 // Current and target positions for smooth interpolation
 let positions = {
-    player1: { x: 50, y: 100 },
-    player2: { x: 100, y: 100 }
+    player1: { x: 50, y: 50 }, // px from bottom
+    player2: { x: 150, y: 50 }
 };
 let targetPositions = { ...positions };
 let myPlayer = null;
@@ -65,7 +88,7 @@ function render() {
     for (let player in positions) {
         const container = document.getElementById(player + "-container");
         container.style.left = positions[player].x + "px";
-        container.style.top = positions[player].y + "px";
+        container.style.bottom = positions[player].y + "px";
     }
 }
 
@@ -133,6 +156,8 @@ socket.on("init", (data) => {
     }
 });
 
+const ground = document.getElementById("ground");
+ground.style.bottom = 0 + "px";
 </script>
 
 {% endblock %}

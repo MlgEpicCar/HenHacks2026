@@ -1,4 +1,4 @@
-from models import db, User
+from models import db, User, Goal
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Accounts module reuses the User model defined in models.py
@@ -12,8 +12,28 @@ def _user_set_password(self, password):
 def _user_check_password(self, password):
     return check_password_hash(self.password, password)
 
+def create_default_goals(user):
+    default_goals = [
+        {"text": "Complete my profile", "priority": 4},
+        {"text": "Add my first friend", "priority": 3},
+        {"text": "Play my first game", "priority": 3},
+        {"text": "Drink enough water", "priority": 2},
+    ]
+
+    for g in default_goals:
+        goal = Goal(
+            user_id=user.id,
+            text=g["text"],
+            priority=g["priority"],
+            completed=False
+        )
+        db.session.add(goal)
+
+    db.session.commit()
+
 User.set_password = _user_set_password
 User.check_password = _user_check_password
+
 
 
 # -------------------------
@@ -29,6 +49,7 @@ def register_user(username, password):
 
     db.session.add(new_user)
     db.session.commit()
+    create_default_goals(new_user)
     return True
 
 
