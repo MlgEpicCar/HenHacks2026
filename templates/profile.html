@@ -3,23 +3,72 @@
 {% block content %}
 
 <h1>Profile</h1>
-<form method="POST" class="profile_page">
-    <input type="text" name="bio" placeholder="Bio" class="bio" value="{{ user.bio }}">
 
-    <select class="dropdown" name="pfp">
-        <option value="unknown" {% if user.pfp == "unknown" %}selected{% endif %}>Choose your Pal!</option>
-        <option value="dog" {% if user.pfp == "dog" %}selected{% endif %}>Dog</option>
-        <option value="cat" {% if user.pfp == "cat" %}selected{% endif %}>Cat</option>
-        <option value="penquin" {% if user.pfp == "penquin" %}selected{% endif %}>Penquin</option>
-        <option value="blue_jellyfish" {% if user.pfp == "blue_jellyfish" %}selected{% endif %}>Blue Jellyfish</option>
-        <option value="pink_jellyfish" {% if user.pfp == "pink_jellyfish" %}selected{% endif %}>Pink Jellyfish</option>
-        <option value="burmer" {% if user.pfp == "burmer" %}selected{% endif %}>burmer</option>
-    </select>
-    <img class="preview"
-     src="{{ url_for('static', filename='pfps/' + user.pfp + '.png') }}"
-     alt="Profile Picture">
-    <button type="submit">Save</button>
-</form>
+<div style="display: flex; gap: 2rem;">
+    <div style="flex: 1; max-width: 50%;">
+        <form method="POST" class="profile_page">
+            <input type="text" name="bio" placeholder="Bio" class="bio" value="{{ user.bio }}">
+
+            <select class="dropdown" name="pfp">
+                <option value="unknown" {% if user.pfp == "unknown" %}selected{% endif %}>Choose your Pal!</option>
+                <option value="dog" {% if user.pfp == "dog" %}selected{% endif %}>Dog</option>
+                <option value="cat" {% if user.pfp == "cat" %}selected{% endif %}>Cat</option>
+                <option value="penquin" {% if user.pfp == "penquin" %}selected{% endif %}>Penquin</option>
+                <option value="blue_jellyfish" {% if user.pfp == "blue_jellyfish" %}selected{% endif %}>Blue Jellyfish</option>
+                <option value="pink_jellyfish" {% if user.pfp == "pink_jellyfish" %}selected{% endif %}>Pink Jellyfish</option>
+                <option value="burmer" {% if user.pfp == "burmer" %}selected{% endif %}>burmer</option>
+            </select>
+            <img class="preview"
+            src="{{ url_for('static', filename='pfps/' + user.pfp + '.png') }}"
+            alt="Profile Picture">
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <div style="flex: 1; max-width: 50%; display: flex; flex-direction: column; gap: 1rem;">
+        <h2>Your Friends</h2>
+        {% for friend in user.friends %}
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.5rem; border: 1px solid #ccc; border-radius: 8px;">
+                <div style="display:flex; align-items:center; gap: 1rem;">
+                    <img src="{{ url_for('static', filename='pfps/' + friend.pfp + '.png') }}" 
+                        alt="{{ friend.username }} PFP" 
+                        style="width:60px; height:60px; object-fit:cover; border-radius:50%;">
+                    <div>
+                        <strong>{{ friend.username }}</strong><br>
+                        <span>{{ friend.bio }}</span>
+                    </div>
+                </div>
+
+                <!-- Remove Friend Button -->
+                <form method="POST" action="{{ url_for('remove_friend', friend_id=friend.id) }}">
+                    <button type="submit" style="background:red; color:white; border:none; padding:0.3rem 0.5rem; border-radius:4px; cursor:pointer;">
+                        Remove
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <p>No friends yet!</p>
+        {% endfor %}
+
+        <h3>Friend Requests</h3>
+        {% for request in pending_requests %}
+            <div style="display:flex; align-items:center; gap:1rem; padding:0.5rem; border:1px solid #ccc; border-radius:8px;">
+                <img src="{{ url_for('static', filename='pfps/' + request.from_user.pfp + '.png') }}" 
+                    style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
+                <div>
+                    <strong>{{ request.from_user.username }}</strong> wants to be your friend
+                </div>
+                <form method="POST" action="{{ url_for('respond_friend_request', request_id=request.id) }}">
+                    <button name="action" value="accept" type="submit">Accept</button>
+                    <button name="action" value="deny" type="submit">Deny</button>
+                </form>
+            </div>
+        {% else %}
+            <p>No pending requests</p>
+        {% endfor %}
+    </div>
+</div>
+
 
 <script>
     const dropdown = document.querySelector(".dropdown");
