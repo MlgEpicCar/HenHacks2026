@@ -141,10 +141,10 @@ body {
 }
 
 .hub-pal {
-    top: 580px;
+    top: 40vh;
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 25vh;
+    height: 25vh;
     object-fit: contain;
     z-index: 2;
     transition: transform 0.2s ease;
