@@ -21,6 +21,7 @@
             
             {% if current_user %}
                 <span class="login">{{ current_user.username }}</span>
+                <span class="level">Level {{ current_user.level }}</span>
                 <span class="xp">{{ current_user.xp or 0 }} xp</span>
             {% else %}
                 <span class="login"><a href="{{ url_for('login') }}">Log In</a></span>

@@ -57,11 +57,13 @@ def setup_routes(app):
             xp_awarded = goal.priority or 1
             user = User.query.get(session["user_id"])
             user.xp = (user.xp or 0) + xp_awarded
+            # recalc level based on 10 xp per level
+            user.level = (user.xp // 10) if user.xp is not None else 0
             db.session.add(user)
         goal.completed = bool(completed)
         db.session.add(goal)
         db.session.commit()
-        return jsonify(success=True, xp= xp_awarded)
+        return jsonify(success=True, xp=xp_awarded)
 
     @app.route("/playground")
     def playground():

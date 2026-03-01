@@ -142,7 +142,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (xpSpan) {
                     // parse current xp and add
                     const curr = parseInt(xpSpan.textContent) || 0;
-                    xpSpan.textContent = (curr + data.xp) + " xp";
+                    const newXp = curr + data.xp;
+                    xpSpan.textContent = newXp + " xp";
+                    const levelSpan = document.querySelector(".level");
+                    if (levelSpan) {
+                        levelSpan.textContent = "Level " + Math.floor(newXp / 10);
+                    }
                 }
             }
         })
