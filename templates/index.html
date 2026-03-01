@@ -13,7 +13,7 @@
                 {% for goal in goals %}
                     <div class="goals" data-goal-id="{{ goal.id }}" data-priority="{{ goal.priority }}">
                         <p class="goaltxt">{{ goal.text }}</p>
-                        <span class="priority-badge" title="Priority">{{ goal.priority }}</span>
+                        <span class="priority-badge" title="Priority">XP: {{ goal.priority }}</span>
                         <input class="goal-checkbox" type="checkbox" {% if goal.completed %}checked{% endif %}>
                     </div>
                 {% endfor %}

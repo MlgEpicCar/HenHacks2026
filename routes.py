@@ -1,5 +1,5 @@
 from flask import render_template, request, session, redirect, url_for, flash, jsonify
-from models import db, Goal
+from models import db, User, Goal
 from accounts import register_user, authenticate_user
 
 def setup_routes(app):
@@ -38,6 +38,30 @@ def setup_routes(app):
         db.session.delete(goal)
         db.session.commit()
         return jsonify(success=True)
+
+    @app.route("/toggle_goal", methods=["POST"])
+    def toggle_goal():
+        if "user_id" not in session:
+            return jsonify(error="not logged in"), 401
+        data = request.get_json() or {}
+        goal_id = data.get("id")
+        completed = data.get("completed")
+        if goal_id is None or completed is None:
+            return jsonify(error="missing fields"), 400
+        goal = Goal.query.get(goal_id)
+        if not goal or goal.user_id != session.get("user_id"):
+            return jsonify(error="not found"), 404
+        # only award xp when marking completed true from false
+        xp_awarded = 0
+        if completed and not goal.completed:
+            xp_awarded = goal.priority or 1
+            user = User.query.get(session["user_id"])
+            user.xp = (user.xp or 0) + xp_awarded
+            db.session.add(user)
+        goal.completed = bool(completed)
+        db.session.add(goal)
+        db.session.commit()
+        return jsonify(success=True, xp= xp_awarded)
 
     @app.route("/gaming")
     def gaming():

@@ -16,7 +16,7 @@ function addItem() {
     const input = document.getElementById("itemInput");
     const priorityInput = document.getElementById("priorityInput");
     const value = input.value.trim();
-    const xp = parseInt(priorityInput.value * 20) || 20 * 3;
+    const priority = parseInt(priorityInput.value) || 3;
 
     if (value === "") return;
 
@@ -24,7 +24,7 @@ function addItem() {
     fetch("/add_goal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: value, XP: xp })
+        body: JSON.stringify({ text: value, priority: priority })
     })
         .then(res => {
             if (!res.ok) throw res;
@@ -48,7 +48,7 @@ function addItem() {
             const badge = document.createElement("span");
             badge.classList.add("priority-badge");
             badge.title = "Priority";
-            badge.textContent = data.priority;
+            badge.textContent = "XP: " + data.priority; // example: 1 XP per priority level
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -113,5 +113,52 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Delete request failed", err);
             alert("Error deleting goal");
         });
+    });
+
+    // checkbox toggle handler (delegated)
+    goalsContainer.addEventListener("change", function(e) {
+        const cb = e.target;
+        if (!cb.classList.contains("goal-checkbox")) return;
+        const goalDiv = cb.closest(".goals");
+        if (!goalDiv) return;
+        const id = goalDiv.dataset.goalId;
+        const completed = cb.checked;
+        fetch("/toggle_goal", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, completed: completed })
+        })
+        .then(res => {
+            if (!res.ok) throw res;
+            return res.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            if (data.xp) {
+                const xpSpan = document.querySelector(".xp");
+                if (xpSpan) {
+                    // parse current xp and add
+                    const curr = parseInt(xpSpan.textContent) || 0;
+                    xpSpan.textContent = (curr + data.xp) + " xp";
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Toggle request failed", err);
+            alert("Error updating goal status");
+        });
+    });
+
+    // ensure existing badges show XP text regardless of previous rendering
+    goalsContainer.querySelectorAll(".priority-badge").forEach(b => {
+        const text = b.textContent.trim();
+        const num = parseInt(text.replace(/[^0-9]/g, "")) || 0;
+        // if it doesn't already start with XP, rewrite
+        if (!text.startsWith("XP")) {
+            b.textContent = "XP: " + (num);
+        }
     });
 });

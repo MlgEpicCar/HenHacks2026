@@ -43,7 +43,12 @@ body {
     text-decoration: none;
     color: white;
 }
-
+.xp {
+    margin-left: 10px;
+    font-size: 0.9rem;
+    color: #ffeaa7;
+    font-weight: bold;
+}
 .nav-links {
     list-style: none;
     display: flex;
@@ -110,15 +115,17 @@ body {
 .priority-badge {
     background-color: #6c5ce7;
     color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
+    border-radius: 12px;
+    padding: 4px 8px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 14px;
     flex-shrink: 0;
+    min-width: 24px;
+    height: 24px;
+    box-sizing: border-box;
 }
 .hubzone {
     background-color: greenyellow;
