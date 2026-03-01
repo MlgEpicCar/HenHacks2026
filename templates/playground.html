@@ -86,19 +86,6 @@ setInterval(() => {
 }, 50); // 50ms = 20 updates/sec
 
 let pfps = {}; // store each player's pfp
-
-socket.on("init", (data) => {
-    myPlayer = data.player;
-    targetPositions = data.positions;
-    pfps = data.pfps || {};
-
-    // Set the background images for each player
-    for (let player in pfps) {
-        const el = document.getElementById(player);
-        if (el) el.style.backgroundImage = `url('${pfps[player]}')`;
-    }
-});
-
 let usernames = {}; // store each player's username
 
 socket.on("init", (data) => {
@@ -106,12 +93,12 @@ socket.on("init", (data) => {
     targetPositions = data.positions;
     pfps = data.pfps || {};
     usernames = data.usernames || {}; // new: usernames mapping
+    usernames = data.usernames || {};
 
     for (let player in pfps) {
         const el = document.getElementById(player);
         if (el) el.style.backgroundImage = `url('${pfps[player]}')`;
 
-        // Set username
         const nameEl = document.getElementById(player + "-name");
         if (nameEl && usernames[player]) nameEl.textContent = usernames[player];
     }
