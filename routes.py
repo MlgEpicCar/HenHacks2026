@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, url_for, flash, jsonify
-from models import db, User, Goal
-from accounts import register_user, authenticate_user
+from models import db, Goal
+from accounts import register_user, authenticate_user, User
 
 def setup_routes(app):
     @app.route("/")
@@ -67,9 +67,18 @@ def setup_routes(app):
     def gaming():
         return render_template("gaming.html")
     
-    @app.route("/profile")
+    @app.route("/profile", methods=["GET", "POST"])
     def profile():
-        return render_template("profile.html")
+        user = User.query.get(session.get("user_id"))
+
+        if request.method == "POST":
+            user.bio = request.form["bio"]
+            user.pfp = request.form["pfp"]
+
+            db.session.commit()
+            return redirect(url_for("profile"))
+
+        return render_template("profile.html", user=user)
     
     @app.route("/settings")
     def settings():

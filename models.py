@@ -5,8 +5,10 @@ db = SQLAlchemy()
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100)) # plain text passwords // hash the passwords if you are planning on releasing this
+    password = db.Column(db.String(100))
     xp = db.Column(db.Integer, default=0)
+    pfp = db.Column(db.String, default="unknown")
+    bio = db.Column(db.String(250), default="This user hasn't set a bio yet.")
 
 class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)

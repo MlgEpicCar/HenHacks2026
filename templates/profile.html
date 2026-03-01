@@ -4,19 +4,31 @@
 
 <h1>Profile</h1>
 <form method="POST" class="profile_page">
-    <input type="text" name="color" placeholder="Favorite Color" required>
-
-    <input type="password" name="password" placeholder="Password" required>
+    <input type="text" name="bio" placeholder="Bio" class="bio" value="{{ user.bio }}">
 
     <select class="dropdown" name="pfp">
-        <option value="unknown">Choose your profile picture</option>
-        <option value="dog">Dog</option>
-        <option value="corgi">Corgi</option>
-        <option value="duck">Duck</option>
-        <option value="goat">Goat</option>
+        <option value="unknown" {% if user.pfp == "unknown" %}selected{% endif %}>Choose your Pal!</option>
+        <option value="dog" {% if user.pfp == "dog" %}selected{% endif %}>Dog</option>
+        <option value="cat" {% if user.pfp == "cat" %}selected{% endif %}>Cat</option>
+        <option value="penquin" {% if user.pfp == "penquin" %}selected{% endif %}>Penquin</option>
+        <option value="blue_jellyfish" {% if user.pfp == "blue_jellyfish" %}selected{% endif %}>Blue Jellyfish</option>
+        <option value="pink_jellyfish" {% if user.pfp == "pink_jellyfish" %}selected{% endif %}>Pink Jellyfish</option>
+        <option value="burmer" {% if user.pfp == "burmer" %}selected{% endif %}>burmer</option>
     </select>
-    <img class="preview" src="{{ url_for('static', filename='pfps/unknown.png') }}" alt="Profile Picture">
+    <img class="preview"
+     src="{{ url_for('static', filename='pfps/' + user.pfp + '.png') }}"
+     alt="Profile Picture">
     <button type="submit">Save</button>
 </form>
+
+<script>
+    const dropdown = document.querySelector(".dropdown");
+    const preview = document.querySelector(".preview");
+
+    dropdown.addEventListener("change", function() {
+        const selected = dropdown.value;
+        preview.src = `/static/pfps/${selected}.png`;
+    });
+</script>
 
 {% endblock %}
