@@ -1,0 +1,42 @@
+<h1>Rock Paper Scissors</h1>
+
+<h3>
+    {{ game.player1.username }} 
+    vs 
+    {{ game.player2.username }}
+</h3>
+
+<hr>
+
+{% if game.winner_id %}
+    <h2>
+        Winner: 
+        {% if game.winner_id == game.player1_id %}
+            {{ game.player1.username }}
+        {% elif game.winner_id == game.player2_id %}
+            {{ game.player2.username }}
+        {% else %}
+            Tie!
+        {% endif %}
+    </h2>
+{% endif %}
+
+{% if not game.winner_id %}
+    <form method="POST">
+        <button name="choice" value="rock">Rock</button>
+        <button name="choice" value="paper">Paper</button>
+        <button name="choice" value="scissors">Scissors</button>
+    </form>
+{% endif %}
+
+<hr>
+
+<p>
+    {{ game.player1.username }} choice:
+    {{ game.player1_choice or "Waiting..." }}
+</p>
+
+<p>
+    {{ game.player2.username }} choice:
+    {{ game.player2_choice or "Waiting..." }}
+</p>

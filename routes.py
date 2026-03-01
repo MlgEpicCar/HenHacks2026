@@ -1,5 +1,5 @@
 from flask import render_template, request, session, redirect, url_for, flash, jsonify
-from models import db, Goal, FriendRequest
+from models import db, Goal, FriendRequest, RPSGame, Challenge
 from accounts import register_user, authenticate_user, User
 
 def get_current_user():
@@ -8,6 +8,20 @@ def get_current_user():
     if not user_id:
         return None
     return User.query.get(user_id)
+
+def create_rps_game(player1_id, player2_id):
+    """Create a new Rock-Paper-Scissors game between two players."""
+    game = RPSGame(
+        player1_id=player1_id,
+        player2_id=player2_id
+    )
+    db.session.add(game)
+    db.session.commit()
+    return game.id
+
+# ----------------------------------
+#             ROUTES
+# ----------------------------------
 
 def setup_routes(app):
     @app.route("/")
@@ -74,7 +88,20 @@ def setup_routes(app):
 
     @app.route("/playground")
     def playground():
-        return render_template("playground.html")
+        current_user = get_current_user()  # your custom function
+        if not current_user:
+            flash("You must be logged in to access this page.", "error")
+            return redirect(url_for("login"))
+
+        # Fetch pending challenges for the current user
+        pending_challenges = Challenge.query.filter_by(to_user_id=current_user.id).all()
+
+        # Render template with user and pending challenges
+        return render_template(
+            "playground.html",
+            user=current_user,
+            pending_challenges=pending_challenges
+        )
     
     @app.route("/profile", methods=["GET", "POST"])
     def profile():
@@ -128,6 +155,10 @@ def setup_routes(app):
         session.pop("user_id", None)
         flash("You have been logged out.")
         return redirect(url_for("index"))
+    
+    # ----------------------------------
+    #            FRIENDSHIP
+    # ----------------------------------
     
     @app.route("/add_friend_by_name", methods=["POST"])
     def add_friend_by_name():
@@ -212,3 +243,84 @@ def setup_routes(app):
         db.session.commit()
         flash(f"{friend.username} has been removed from your friends.", "success")
         return redirect(url_for("profile"))
+    
+    # ----------------------------------
+    #              GAMES
+    # ----------------------------------
+
+    @app.route("/rps/challenge/<int:friend_id>")
+    def rps_challenge(friend_id):
+        current_user = get_current_user()
+        if not current_user:
+            flash("Login first.", "error")
+            return redirect(url_for("login"))
+
+        friend = User.query.get(friend_id)
+        if not friend:
+            flash("Friend not found.", "error")
+            return redirect(url_for("profile"))
+
+        # 🔎 Look for an existing unfinished game between these two
+        game = RPSGame.query.filter(
+            (
+                (RPSGame.player1_id == current_user.id) &
+                (RPSGame.player2_id == friend.id)
+            ) |
+            (
+                (RPSGame.player1_id == friend.id) &
+                (RPSGame.player2_id == current_user.id)
+            )
+        ).filter(RPSGame.winner_id == None).first()
+
+        # If none exists, create one
+        if not game:
+            game = RPSGame(
+                player1_id=current_user.id,
+                player2_id=friend.id
+            )
+            db.session.add(game)
+            db.session.commit()
+
+        return redirect(url_for("rps_play", game_id=game.id))
+    
+    @app.route("/rps/<int:game_id>", methods=["GET", "POST"])
+    def rps_play(game_id):
+        current_user = get_current_user()
+        if not current_user:
+            flash("Login first.", "error")
+            return redirect(url_for("login"))
+
+        game = RPSGame.query.get(game_id)
+        if not game or current_user.id not in [game.player1_id, game.player2_id]:
+            flash("Invalid game.", "error")
+            return redirect(url_for("profile"))
+
+        if request.method == "POST":
+            choice = request.form.get("choice")
+            if choice not in ["rock", "paper", "scissors"]:
+                flash("Invalid choice.", "error")
+                return redirect(url_for("rps_play", game_id=game.id))
+
+            if current_user.id == game.player1_id:
+                game.player1_choice = choice
+            else:
+                game.player2_choice = choice
+
+            # Resolve winner if both chose
+            if game.player1_choice and game.player2_choice:
+                p1 = game.player1_choice
+                p2 = game.player2_choice
+
+                if p1 == p2:
+                    game.winner_id = None
+                elif (p1 == "rock" and p2 == "scissors") or \
+                    (p1 == "paper" and p2 == "rock") or \
+                    (p1 == "scissors" and p2 == "paper"):
+                    game.winner_id = game.player1_id
+                else:
+                    game.winner_id = game.player2_id
+
+            db.session.commit()
+            return redirect(url_for("rps_play", game_id=game.id))
+
+        return render_template("rps_play.html", game=game, current_user=current_user)

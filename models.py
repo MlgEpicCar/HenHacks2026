@@ -46,3 +46,27 @@ class FriendRequest(db.Model):
 
     from_user = db.relationship("User", foreign_keys=[from_user_id])
     to_user = db.relationship("User", foreign_keys=[to_user_id])
+
+class RPSGame(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    player1_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    player2_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    player1_choice = db.Column(db.String(10), default=None)
+    player2_choice = db.Column(db.String(10), default=None)
+    winner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    player1 = db.relationship("User", foreign_keys=[player1_id])
+    player2 = db.relationship("User", foreign_keys=[player2_id])
+    winner = db.relationship("User", foreign_keys=[winner_id])
+
+class Challenge(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    from_user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    to_user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    game_type = db.Column(db.String(50), nullable=False)  # e.g., "rps"
+    status = db.Column(db.String(20), default="pending")   # "pending", "accepted", "started", "denied"
+    game_id = db.Column(db.Integer, nullable=True)
+
+    from_user = db.relationship("User", foreign_keys=[from_user_id], backref="sent_challenges")
+    to_user = db.relationship("User", foreign_keys=[to_user_id], backref="received_challenges")
