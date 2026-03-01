@@ -63,9 +63,9 @@ def setup_routes(app):
         db.session.commit()
         return jsonify(success=True, xp= xp_awarded)
 
-    @app.route("/gaming")
-    def gaming():
-        return render_template("gaming.html")
+    @app.route("/playground")
+    def playground():
+        return render_template("playground.html")
     
     @app.route("/profile", methods=["GET", "POST"])
     def profile():

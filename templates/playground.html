@@ -4,8 +4,8 @@
 <h1>Gaming</h1>
 
 <div id="game-board" style="width:400px;height:200px;border:1px solid black;position:relative;">
-    <div id="player1" style="width:20px;height:20px;background:red;position:absolute;top:50px;left:50px;"></div>
-    <div id="player2" style="width:20px;height:20px;background:blue;position:absolute;top:50px;left:100px;"></div>
+    <div id="player1" class="player" style="width:40px;height:40px;position:absolute;top:50px;left:50px;background-size:cover;background-position:center;"></div>
+    <div id="player2" class="player" style="width:40px;height:40px;position:absolute;top:50px;left:100px;background-size:cover;background-position:center;"></div>
 </div>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -75,6 +75,20 @@ setInterval(() => {
         socket.emit("move", { keys: Array.from(keysDown) });
     }
 }, 50); // 50ms = 20 updates/sec
+
+let pfps = {}; // store each player's pfp
+
+socket.on("init", (data) => {
+    myPlayer = data.player;
+    targetPositions = data.positions;
+    pfps = data.pfps || {};
+
+    // Set the background images for each player
+    for (let player in pfps) {
+        const el = document.getElementById(player);
+        if (el) el.style.backgroundImage = `url('${pfps[player]}')`;
+    }
+});
 </script>
 
 {% endblock %}

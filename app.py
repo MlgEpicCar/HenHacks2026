@@ -2,7 +2,7 @@ from flask import Flask, session
 from flask_socketio import SocketIO
 
 from routes import setup_routes
-from easter_egg import setup_socket_handlers
+from playground import setup_socket_handlers
 from models import db, User, Goal
 # accounts module still provides authentication helpers
 from accounts import register_user, authenticate_user
@@ -28,8 +28,8 @@ def inject_user():
 with app.app_context():
     db.create_all()  # Creates all tables defined in models.py
 
-if __name__ == "__main__":
-    app.run(debug=True)
+#if __name__ == "__main__":
+    #app.run(debug=True)
 
-# if __name__ == "__main__":
-    #socketio.run(app, debug=True, host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    socketio.run(app, debug=True, host="0.0.0.0", port=5000)
