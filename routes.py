@@ -1,4 +1,4 @@
-from flask import render_template, request, session, redirect, url_for, flash
+from flask import render_template, request, session, redirect, url_for, flash, jsonify
 from models import db, Goal
 from accounts import register_user, authenticate_user
 
@@ -16,12 +16,28 @@ def setup_routes(app):
             return {"error": "not logged in"}, 401
         data = request.get_json() or {}
         text = data.get("text")
+        priority = data.get("priority", 3)
         if not text:
             return {"error": "no text"}, 400
-        goal = Goal(text=text, user_id=session["user_id"])
+        goal = Goal(text=text, user_id=session["user_id"], priority=priority)
         db.session.add(goal)
         db.session.commit()
-        return {"id": goal.id, "text": goal.text, "completed": goal.completed}
+        return {"id": goal.id, "text": goal.text, "completed": goal.completed, "priority": goal.priority}
+
+    @app.route("/delete_goal", methods=["POST"])
+    def delete_goal():
+        if "user_id" not in session:
+            return jsonify(error="not logged in"), 401
+        data = request.get_json() or {}
+        goal_id = data.get("id")
+        if not goal_id:
+            return jsonify(error="no id"), 400
+        goal = Goal.query.get(goal_id)
+        if not goal or goal.user_id != session.get("user_id"):
+            return jsonify(error="not found"), 404
+        db.session.delete(goal)
+        db.session.commit()
+        return jsonify(success=True)
 
     @app.route("/gaming")
     def gaming():

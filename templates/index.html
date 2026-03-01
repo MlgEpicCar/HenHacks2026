@@ -11,8 +11,9 @@
         <div class="goals_container" id="goals_Container">
             {% if current_user %}
                 {% for goal in goals %}
-                    <div class="goals" data-goal-id="{{ goal.id }}">
+                    <div class="goals" data-goal-id="{{ goal.id }}" data-priority="{{ goal.priority }}">
                         <p class="goaltxt">{{ goal.text }}</p>
+                        <span class="priority-badge" title="Priority">{{ goal.priority }}</span>
                         <input class="goal-checkbox" type="checkbox" {% if goal.completed %}checked{% endif %}>
                     </div>
                 {% endfor %}
@@ -21,7 +22,8 @@
                 <button class="goaltxt" onclick="openModal()">
                     Add Goal
                 </button>
-            </div>  
+            </div>
+            
         </div>
         
 
@@ -32,8 +34,11 @@
 <div class="modal" id="popup">
   <div class="modal-content">
     <h3>Set a Personal Goal👋</h3>
-    <p>Enter a goal you want to achieve.</p>
+    <p> Enter a goal you want to achieve </p>
+    <p> Choose a number based on its difficulty and importance.</p>
     <input type="text" id="itemInput" placeholder="Enter item">
+    <label for="priorityInput">Priority (1-5):</label>
+    <input type="number" id="priorityInput" min="1" max="5" value="3" placeholder="1-5">
     <button class="close" onclick="addItem(), closeModal()">Add Goal</button>
   </div>
 </div>
