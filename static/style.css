@@ -48,6 +48,12 @@ html, body {
     text-decoration: none;
     color: white;
 }
+.level {
+    margin-left: 10px;
+    font-size: 1.3rem;
+    color: #ffeaa7;
+    font-weight: bold;
+}
 .xp {
     margin-left: 10px;
     font-size: 0.9rem;
@@ -88,7 +94,7 @@ html, body {
     height: 100%;
 }
 .goals_container {
-    height: 40vh;
+    height: 55vh;
     margin: 5%;
     overflow-y: auto;
 }
@@ -127,6 +133,12 @@ html, body {
 .goal-checkbox {
     flex-shrink: 0;
     cursor: pointer;
+}
+.goalheader {
+    color: white;
+    text-align: center;
+    flex: 1;
+    height: auto;
 }
 .priority-badge {
     background-color: #6c5ce7;

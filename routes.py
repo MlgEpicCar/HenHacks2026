@@ -144,7 +144,7 @@ def setup_routes(app):
 
             if user:
                 session["user_id"] = user.id
-                return render_template("index.html")
+                return redirect(url_for("index"))
             else:
                 return "Invalid login."
 
