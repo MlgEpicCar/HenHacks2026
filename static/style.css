@@ -76,7 +76,7 @@ body {
 
 .index_container {
     display: grid;
-    grid-template-columns: 33% 67%;
+    grid-template-columns: 38% 62%;
 }
 .dashboard {
     background-color: lightblue;
@@ -128,8 +128,35 @@ body {
     box-sizing: border-box;
 }
 .hubzone {
-    background-color: greenyellow;
-    height: 100%;
+    position: relative;   /* allows absolute positioning inside */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hub-background {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hub-pal {
+    top: 580px;
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    z-index: 2;
+    transition: transform 0.2s ease;
+}
+
+.hub-pal:hover {
+    animation: wiggle 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes wiggle {
+    0%   { transform: translateX(-10px); }
+    100% { transform: translateX(10px); }
 }
 
 /* 

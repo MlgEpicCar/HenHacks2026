@@ -28,7 +28,15 @@
         
 
     </div>
-    <div class="hubzone"></div>
+    <div class="hubzone">
+        <img class="hub-background" src="/static/images/forest.jpg">
+
+        {% if current_user %}
+            <img class="hub-pal"
+                src="{{ url_for('static', filename='pfps/' + current_user.pfp + '.png') }}"
+                alt="Your Pal">
+        {% endif %}
+    </div>
 </div>
 
 <div class="modal" id="popup">
