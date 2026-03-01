@@ -3,5 +3,20 @@
 {% block content %}
 
 <h1>Profile</h1>
+<form method="POST" class="profile_page">
+    <input type="text" name="color" placeholder="Favorite Color" required>
+
+    <input type="password" name="password" placeholder="Password" required>
+
+    <select class="dropdown" name="pfp">
+        <option value="unknown">Choose your profile picture</option>
+        <option value="dog">Dog</option>
+        <option value="corgi">Corgi</option>
+        <option value="duck">Duck</option>
+        <option value="goat">Goat</option>
+    </select>
+    <img class="preview" src="{{ url_for('static', filename='pfps/unknown.png') }}" alt="Profile Picture">
+    <button type="submit">Save</button>
+</form>
 
 {% endblock %}
