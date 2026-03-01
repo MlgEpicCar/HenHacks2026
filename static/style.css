@@ -6,6 +6,11 @@ body {
     font-family: Arial, sans-serif;
     background-color: #dbe5f3;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;      /* hides any tiny overflow */
+}
 
 /*
 ==============================
@@ -83,14 +88,14 @@ body {
     height: 100%;
 }
 .goals_container {
-    height: 200px;
+    height: 40vh;
     margin: 5%;
     overflow-y: auto;
 }
 .goals {
-    background-color: lightcoral;
+    background-color: #6c5ce7;
     width: 100%;
-    min-height: 20%;
+    min-height: 10vh;
     margin-top: 5px;
     display: flex;
     justify-content: space-between;
@@ -100,6 +105,7 @@ body {
     box-sizing: border-box;
 }
 .goaltxt {
+    color: white;
     text-align: center;
     flex: 1;
     height: auto;
@@ -107,6 +113,16 @@ body {
     padding: 0;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+#addGoalButton {
+    background-color: #00b894;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 .goal-checkbox {
     flex-shrink: 0;
@@ -192,6 +208,7 @@ body {
   inset: 0;
   background: rgba(0,0,0,0.5);
 
+  z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -213,6 +230,7 @@ body {
   background: white;
   padding: 30px;
   border-radius: 8px;
+  z-index: 10;
   transform: scale(0.9);
   transition: transform 0.3s ease;
 }
