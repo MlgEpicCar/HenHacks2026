@@ -3,8 +3,9 @@ from flask_socketio import SocketIO
 
 from routes import setup_routes
 from easter_egg import setup_socket_handlers
-from accounts import db, User
-from models import Goal
+from models import db, User, Goal
+# accounts module still provides authentication helpers
+from accounts import register_user, authenticate_user
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
