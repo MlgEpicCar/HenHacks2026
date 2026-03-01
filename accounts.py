@@ -1,20 +1,19 @@
-from flask_sqlalchemy import SQLAlchemy
-from models import db
+from models import db, User
 from werkzeug.security import generate_password_hash, check_password_hash
 
-db = SQLAlchemy()
+# Accounts module reuses the User model defined in models.py
+# and the shared SQLAlchemy instance (`db`).
+# Password helper methods are added dynamically below.
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False) # plain text passwords // hash the passwords if you are planning on releasing this
-    xp = db.Column(db.Integer, default=0)
+def _user_set_password(self, password):
+    self.password = generate_password_hash(password)
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
 
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+def _user_check_password(self, password):
+    return check_password_hash(self.password, password)
+
+User.set_password = _user_set_password
+User.check_password = _user_check_password
 
 
 # -------------------------
