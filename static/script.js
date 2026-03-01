@@ -18,29 +18,50 @@ function addItem() {
 
     if (value === "") return;
 
-    // create goal structure similar to existing markup
-    const goalDiv = document.createElement("div");
-    goalDiv.classList.add("goals");
+    // send to server for persistence
+    fetch("/add_goal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: value })
+    })
+        .then(res => {
+            if (!res.ok) throw res;
+            return res.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-    const p = document.createElement("p");
-    p.classList.add("goaltxt");
-    p.textContent = value;
+            const goalDiv = document.createElement("div");
+            goalDiv.classList.add("goals");
+            goalDiv.dataset.goalId = data.id;
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.classList.add("goal-checkbox");
+            const p = document.createElement("p");
+            p.classList.add("goaltxt");
+            p.textContent = data.text;
 
-    goalDiv.appendChild(p);
-    goalDiv.appendChild(checkbox);
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.classList.add("goal-checkbox");
+            if (data.completed) checkbox.checked = true;
 
-    const container = document.getElementById("goals_Container") || document.querySelector(".goals_container");
-    // Find the Add Goal button (first .goals child with a button inside) and insert before it
-    const addGoalButton = container.querySelector(".goals:has(button)");
-    if (addGoalButton) {
-        container.insertBefore(goalDiv, addGoalButton);
-    } else {
-        container.appendChild(goalDiv);
-    }
+            goalDiv.appendChild(p);
+            goalDiv.appendChild(checkbox);
+
+            const container = document.getElementById("goals_Container") || document.querySelector(".goals_container");
+            const addGoalWrapper = container.querySelector(".add-goal-wrapper");
+            if (addGoalWrapper) {
+                container.insertBefore(goalDiv, addGoalWrapper);
+            } else {
+                container.appendChild(goalDiv);
+            }
+        })
+        .catch(err => {
+            console.error("Failed to add goal", err);
+            alert("Could not save goal. Are you logged in?");
+        });
 
     input.value = "";
 }

@@ -1,10 +1,27 @@
 from flask import render_template, request, session, redirect, url_for, flash
+from models import db, Goal
 from accounts import register_user, authenticate_user
 
 def setup_routes(app):
     @app.route("/")
     def index():
-        return render_template("index.html")
+        goals = []
+        if "user_id" in session:
+            goals = Goal.query.filter_by(user_id=session["user_id"]).all()
+        return render_template("index.html", goals=goals)
+
+    @app.route("/add_goal", methods=["POST"])
+    def add_goal():
+        if "user_id" not in session:
+            return {"error": "not logged in"}, 401
+        data = request.get_json() or {}
+        text = data.get("text")
+        if not text:
+            return {"error": "no text"}, 400
+        goal = Goal(text=text, user_id=session["user_id"])
+        db.session.add(goal)
+        db.session.commit()
+        return {"id": goal.id, "text": goal.text, "completed": goal.completed}
 
     @app.route("/gaming")
     def gaming():
