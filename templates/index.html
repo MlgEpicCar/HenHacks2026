@@ -9,7 +9,15 @@
         <h2>My Goals</h2>
         <p>View your goals and progress.</p>
         <div class="goals_container" id="goals_Container">
-            <div class="goals">
+            {% if current_user %}
+                {% for goal in goals %}
+                    <div class="goals" data-goal-id="{{ goal.id }}">
+                        <p class="goaltxt">{{ goal.text }}</p>
+                        <input class="goal-checkbox" type="checkbox" {% if goal.completed %}checked{% endif %}>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="goals add-goal-wrapper">
                 <button class="goaltxt" onclick="openModal()">
                     Add Goal
                 </button>
