@@ -3,9 +3,18 @@
 
 <h1>Gaming</h1>
 
-<div id="game-board" style="width:400px;height:200px;border:1px solid black;position:relative;">
-    <div id="player1" class="player" style="width:40px;height:40px;position:absolute;top:50px;left:50px;background-size:cover;background-position:center;"></div>
-    <div id="player2" class="player" style="width:40px;height:40px;position:absolute;top:50px;left:100px;background-size:cover;background-position:center;"></div>
+<div id="game-board" style="width:100%;height:100vh;border:0px solid black;position:relative;">
+    <!-- Player 1 -->
+    <div id="player1-container" style="position:absolute; left:50px; top:300px; text-align:center;">
+        <div id="player1" class="player" style="width:15vh;height:15vh;background-size:cover;background-position:center;"></div>
+        <span id="player1-name" class="player-name" style="color:white; font-weight:bold;">Player1</span>
+    </div>
+
+    <!-- Player 2 -->
+    <div id="player2-container" style="position:absolute; left:100px; top:300px; text-align:center;">
+        <div id="player2" class="player" style="width:15vh;height:15vh;background-size:cover;background-position:center;"></div>
+        <span id="player2-name" class="player-name" style="color:white; font-weight:bold;">Player2</span>
+    </div>
 </div>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
@@ -15,8 +24,8 @@ const keysDown = new Set();
 
 // Current and target positions for smooth interpolation
 let positions = {
-    player1: { x: 50, y: 50 },
-    player2: { x: 100, y: 50 }
+    player1: { x: 50, y: 300 },
+    player2: { x: 100, y: 300 }
 };
 let targetPositions = { ...positions };
 let myPlayer = null;
@@ -25,9 +34,9 @@ const speed = 0.1; // interpolation speed (0.1-0.3 works well)
 // Render function: updates DOM positions
 function render() {
     for (let player in positions) {
-        const el = document.getElementById(player);
-        el.style.left = positions[player].x + "px";
-        el.style.top = positions[player].y + "px";
+        const container = document.getElementById(player + "-container");
+        container.style.left = positions[player].x + "px";
+        container.style.top = positions[player].y + "px";
     }
 }
 
@@ -89,6 +98,25 @@ socket.on("init", (data) => {
         if (el) el.style.backgroundImage = `url('${pfps[player]}')`;
     }
 });
+
+let usernames = {}; // store each player's username
+
+socket.on("init", (data) => {
+    myPlayer = data.player;
+    targetPositions = data.positions;
+    pfps = data.pfps || {};
+    usernames = data.usernames || {}; // new: usernames mapping
+
+    for (let player in pfps) {
+        const el = document.getElementById(player);
+        if (el) el.style.backgroundImage = `url('${pfps[player]}')`;
+
+        // Set username
+        const nameEl = document.getElementById(player + "-name");
+        if (nameEl && usernames[player]) nameEl.textContent = usernames[player];
+    }
+});
+
 </script>
 
 {% endblock %}

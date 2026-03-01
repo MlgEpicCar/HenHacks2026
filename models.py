@@ -8,7 +8,7 @@ class User(db.Model):
     password = db.Column(db.String(100))
     xp = db.Column(db.Integer, default=0)
     pfp = db.Column(db.String, default="unknown")
-    bio = db.Column(db.String(250), default="This user hasn't set a bio yet.")
+    bio = db.Column(db.String(250), default="Enter bio here.")
 
 class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)

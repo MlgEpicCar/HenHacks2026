@@ -11,6 +11,7 @@ def setup_socket_handlers(socketio):
         "player2": {"x": 300, "y": 300}
     }
     player_users = {}
+    usernames = {}
 
     @socketio.on("connect")
     def handle_connect():
@@ -29,9 +30,10 @@ def setup_socket_handlers(socketio):
         pfps = {}
         for player, user_id in player_users.items():
             user = User.query.get(user_id)
+            usernames[player] = user.username if user else "Unknown"
             pfps[player] = url_for("static", filename=f"pfps/{user.pfp}.png") if user else ""
 
-        emit("init", {"player": players[sid], "positions": positions, "pfps": pfps})
+        emit("init", {"player": players[sid], "positions": positions, "pfps": pfps, "usernames": usernames})
 
     @socketio.on("move")
     def handle_move(data):
